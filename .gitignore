@@ -27,4 +27,4 @@ replay_pid*
 .vscode/*
 
 #private files
-myproject\src\main\resources\config.json
+myproject/src/main/resources/config.json
