@@ -36,7 +36,7 @@ public class AuthHandler implements HttpHandler {
         POST /api/auth
         Content-Type: application/json
         {
-            "action": "login",
+            "action": "customerlogin",
             "username": "testuser",
             "password": "securepassword123"
         }
@@ -45,7 +45,7 @@ public class AuthHandler implements HttpHandler {
      * POST /api/auth
         Content-Type: application/json
         {
-            "action": "register",
+            "action": "customerregister",
             "username": "newuser",
             "email": "test1@test.com",
             "password": "newpassword123",
