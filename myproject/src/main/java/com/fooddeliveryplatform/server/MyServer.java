@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import com.fooddeliveryplatform.httphandler.AuthHandler;
+import com.fooddeliveryplatform.httphandler.AuthMiddleware;
 import com.fooddeliveryplatform.httphandler.RestaurantApiHandler;
 import com.fooddeliveryplatform.httphandler.UserApiHandler;
 import com.sun.net.httpserver.HttpHandler;
@@ -17,8 +18,8 @@ public class MyServer {
         server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(null); // creates a default executor
         addHandler("/api/auth", new AuthHandler());
-        addHandler("/api/restaurants", new RestaurantApiHandler());
-        addHandler("/api/users", new UserApiHandler());
+        addHandler("/api/customers", new AuthMiddleware(new UserApiHandler(), "CUSTOMER"));
+        addHandler("/api/restaurants", new AuthMiddleware(new RestaurantApiHandler(), "RESTAURANT"));
     }
 
     public void start() {
