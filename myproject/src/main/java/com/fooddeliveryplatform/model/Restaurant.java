@@ -13,6 +13,7 @@ public class Restaurant {
     private String name;
     private String openingTime;
     private User owner;
+    private Long ownerId;
     private boolean isActive;
 
     public Restaurant() {}
@@ -26,6 +27,18 @@ public class Restaurant {
         this.name = name;
         this.openingTime = openingTime;
         this.owner = owner;
+        this.isActive = isActive;
+    }
+    public Restaurant(Long restaurantId, String closingTime, int deliveryRadius, String description,
+                      String logoUrl, String name, String openingTime, Long ownerId, boolean isActive) {
+        this.restaurantId = restaurantId;
+        this.closingTime = closingTime;
+        this.deliveryRadius = deliveryRadius;
+        this.description = description;
+        this.logoUrl = logoUrl;
+        this.name = name;
+        this.openingTime = openingTime;
+        this.ownerId = ownerId;
         this.isActive = isActive;
     }
     public Long getId() {
@@ -75,6 +88,12 @@ public class Restaurant {
     }
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+    public Long getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
     public boolean isActive() {
         return isActive;

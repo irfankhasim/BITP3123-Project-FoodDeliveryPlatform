@@ -105,6 +105,8 @@ public class AuthHandler implements HttpHandler {
 
         UserDao userDao = new UserDao();
         User user = userDao.findByUsername(username);
+        System.out.println("User found: " + (user != null ? user.getUsername() : "null"));
+        System.out.println("userid: " + (user != null ? user.getUserId() : "null"));
         RestaurantDao restaurantDao = new RestaurantDao();
         Restaurant restaurant = restaurantDao.findOwnerById(user.getUserId());
         if (restaurant == null) {

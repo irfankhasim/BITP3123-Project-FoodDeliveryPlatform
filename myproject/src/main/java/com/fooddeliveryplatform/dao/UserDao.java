@@ -70,6 +70,31 @@ public class UserDao implements Dao<User> {
         return null; // null if user not found
     }
 
+    public User findById (Long userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getLong("user_id"),
+                        rs.getString("username"),
+                        rs.getString("address"),
+                        rs.getString("email"),
+                        rs.getString("full_name"),
+                        rs.getBoolean("is_active"),
+                        rs.getString("password"),
+                        rs.getString("phone"),
+                        UserRole.valueOf(rs.getString("role"))
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // null if user not found
+    }
+
     @Override
     public List<User> getAll() throws SQLException {
         String sql = "SELECT * FROM users";
@@ -92,6 +117,8 @@ public class UserDao implements Dao<User> {
                         UserRole.valueOf(rs.getString("role")))
                 );
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
