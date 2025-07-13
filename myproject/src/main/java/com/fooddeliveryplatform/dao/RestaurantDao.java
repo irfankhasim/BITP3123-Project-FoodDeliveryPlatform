@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fooddeliveryplatform.model.Restaurant;
+import com.fooddeliveryplatform.model.User;
 import com.fooddeliveryplatform.util.DatabaseConnection;
 
 public class RestaurantDao implements Dao<Restaurant> {
@@ -21,6 +22,7 @@ public class RestaurantDao implements Dao<Restaurant> {
 
     @Override
     public List<Restaurant> getAll() throws SQLException {
+        UserDao userDao = new UserDao();
         String string = "SELECT * FROM restaurants";
         List<Restaurant> restaurants = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
@@ -29,21 +31,26 @@ public class RestaurantDao implements Dao<Restaurant> {
             
             while (rs.next()) {
                 restaurants.add(new Restaurant(
-                        rs.getLong("restaurantId"),
+                        rs.getLong("restaurant_id"),
                         rs.getString("closing_time"),
                         rs.getInt("delivery_radius"),
                         rs.getString("description"),
                         rs.getString("logo_url"),
                         rs.getString("name"),
                         rs.getString("opening_time"),
-                        null, // Assuming owner is set later
+                        rs.getLong("user_id"), // Create User object with owner_id
                         rs.getBoolean("is_active")
                 ));
+            }
+            for(Restaurant restaurant : restaurants) {
+                
+                User owner = userDao.findById(restaurant.getOwnerId());
+                restaurant.setOwner(owner);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Placeholder return
+        return restaurants;
     }
 
     @Override
@@ -86,21 +93,21 @@ public class RestaurantDao implements Dao<Restaurant> {
     }
     
     public Restaurant findOwnerById(Long ownerId) {
-        String sql = "SELECT * FROM restaurants WHERE owner_id = ?";
+        String sql = "SELECT * FROM restaurants WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, ownerId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return new Restaurant(
-                        rs.getLong("restaurantId"),
+                        rs.getLong("restaurant_id"),
                         rs.getString("closing_time"),
                         rs.getInt("delivery_radius"),
                         rs.getString("description"),
                         rs.getString("logo_url"),
                         rs.getString("name"),
                         rs.getString("opening_time"),
-                        null, // Assuming owner is set later or not required in constructor
+                        rs.getLong("user_id"), // Assuming owner is set later or not required in constructor
                         rs.getBoolean("is_active")
                 );
             }
