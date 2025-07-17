@@ -7,6 +7,8 @@ import com.fooddeliveryplatform.httphandler.AuthHandler;
 import com.fooddeliveryplatform.httphandler.AuthMiddleware;
 import com.fooddeliveryplatform.httphandler.RestaurantApiHandler;
 import com.fooddeliveryplatform.httphandler.UserApiHandler;
+import com.fooddeliveryplatform.httphandler.FoodItemApiHandler;
+import com.fooddeliveryplatform.httphandler.DeliveryTrackingApiHandler;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
@@ -20,6 +22,8 @@ public class MyServer {
         addHandler("/api/auth", new AuthHandler());
         addHandler("/api/customers", new AuthMiddleware(new UserApiHandler(), "CUSTOMER"));
         addHandler("/api/restaurants", new AuthMiddleware(new RestaurantApiHandler(), "RESTAURANT"));
+        addHandler("/api/fooditems", new FoodItemApiHandler());
+        addHandler("/api/delivery", new AuthMiddleware(new DeliveryTrackingApiHandler(), "RESTAURANT"));
     }
 
     public void start() {
