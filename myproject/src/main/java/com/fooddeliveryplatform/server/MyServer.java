@@ -47,8 +47,8 @@ public class MyServer {
         handlerMap.put("/api/restaurants/{id}/menu", new AuthMiddleware(foodItemHandler, "CUSTOMER,RESTAURANT"));
         
         // Food item endpoints
-        handlerMap.put("/api/fooditems", new AuthMiddleware(foodItemHandler, "RESTAURANT"));
-        handlerMap.put("/api/fooditems/{id}", new AuthMiddleware(foodItemHandler, "RESTAURANT"));
+        handlerMap.put("/api/fooditems", new AuthMiddleware(foodItemHandler, "CUSTOMER,RESTAURANT"));
+        handlerMap.put("/api/fooditems/{id}", new AuthMiddleware(foodItemHandler, "CUSTOMER,RESTAURANT"));
         
         // Order endpoints
         handlerMap.put("/api/orders", new AuthMiddleware(orderHandler, "CUSTOMER,RESTAURANT"));
@@ -56,16 +56,16 @@ public class MyServer {
         handlerMap.put("/api/orders/{id}/items", new AuthMiddleware(orderItemHandler, "CUSTOMER,RESTAURANT"));
         
         // Order item endpoints
-        handlerMap.put("/api/orderitems", new AuthMiddleware(orderItemHandler, "RESTAURANT"));
-        handlerMap.put("/api/orderitems/{id}", new AuthMiddleware(orderItemHandler, "RESTAURANT"));
+        handlerMap.put("/api/orderitems", new AuthMiddleware(orderItemHandler, "CUSTOMER,RESTAURANT"));
+        handlerMap.put("/api/orderitems/{id}", new AuthMiddleware(orderItemHandler, "CUSTOMER,RESTAURANT"));
         
         // Payment endpoints
-        handlerMap.put("/api/payments", new AuthMiddleware(paymentHandler, "CUSTOMER"));
-        handlerMap.put("/api/orders/{id}/payment", new AuthMiddleware(paymentHandler, "CUSTOMER"));
+        handlerMap.put("/api/payments", new AuthMiddleware(paymentHandler, "CUSTOMER,RESTAURANT"));
+        handlerMap.put("/api/orders/{id}/payment", new AuthMiddleware(paymentHandler, "CUSTOMER,RESTAURANT"));
         
         // Delivery tracking endpoints
         handlerMap.put("/api/deliveries", new AuthMiddleware(deliveryTrackingHandler, "DELIVERY_PARTNER"));
-        handlerMap.put("/api/orders/{id}/tracking", new AuthMiddleware(deliveryTrackingHandler, "CUSTOMER,DELIVERY_PARTNER"));
+        handlerMap.put("/api/orders/{id}/tracking", new AuthMiddleware(deliveryTrackingHandler, "CUSTOMER,DELIVERY_PARTNER,RESTAURANT"));
     }
 
     private void registerContexts() {

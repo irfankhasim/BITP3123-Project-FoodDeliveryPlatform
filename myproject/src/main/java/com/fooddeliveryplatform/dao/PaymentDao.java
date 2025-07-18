@@ -1,16 +1,16 @@
 package com.fooddeliveryplatform.dao;
 
+import com.fooddeliveryplatform.model.Payment;
+import com.fooddeliveryplatform.model.PaymentMethod;
+import com.fooddeliveryplatform.model.PaymentStatus;
+import com.fooddeliveryplatform.util.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fooddeliveryplatform.model.PaymentMethod;
-import com.fooddeliveryplatform.model.PaymentStatus;
-import com.fooddeliveryplatform.model.Payment;
-import com.fooddeliveryplatform.util.DatabaseConnection;
 
 public class PaymentDao implements Dao<Payment> {
 
@@ -35,16 +35,16 @@ public class PaymentDao implements Dao<Payment> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Placeholder
+        return null;
     }
 
     @Override
     public List<Payment> getAll() throws SQLException {
         String sql = "SELECT * FROM payments";
+        List<Payment> payments = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
-            List<Payment> payments = new ArrayList<>();
             while (rs.next()) {
                 payments.add(new Payment(
                         rs.getLong("payment_id"),
@@ -58,8 +58,7 @@ public class PaymentDao implements Dao<Payment> {
             }
             return payments;
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw e; // Rethrow to handle in the calling method
+            throw e;
         }
     }
 
@@ -74,6 +73,7 @@ public class PaymentDao implements Dao<Payment> {
             pstmt.setString(4, payment.getStatus().name());
             pstmt.setString(5, payment.getTransactionId());
             pstmt.setLong(6, payment.getOrderId());
+            
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
@@ -86,18 +86,62 @@ public class PaymentDao implements Dao<Payment> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Placeholder
+        return null;
     }
 
     @Override
     public Payment update(Payment payment) {
-        // Implementation to update a payment
-        return null; // Placeholder
+        String sql = "UPDATE payments SET amount = ?, payment_method = ?, status = ?, transaction_id = ? WHERE payment_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, payment.getAmount());
+            pstmt.setString(2, payment.getPaymentMethod().name());
+            pstmt.setString(3, payment.getStatus().name());
+            pstmt.setString(4, payment.getTransactionId());
+            pstmt.setLong(5, payment.getPaymentId());
+            
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                return payment;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public void delete(Payment payment) {
-        // Implementation to delete a payment
+        String sql = "DELETE FROM payments WHERE payment_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, payment.getPaymentId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    
+
+    public Payment getPaymentByOrderId(long orderId) {
+        String sql = "SELECT * FROM payments WHERE order_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Payment(
+                        rs.getLong("payment_id"),
+                        rs.getDouble("amount"),
+                        rs.getDate("created_at"),
+                        PaymentMethod.valueOf(rs.getString("payment_method")),
+                        PaymentStatus.valueOf(rs.getString("status")),
+                        rs.getString("transaction_id"),
+                        rs.getLong("order_id")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
