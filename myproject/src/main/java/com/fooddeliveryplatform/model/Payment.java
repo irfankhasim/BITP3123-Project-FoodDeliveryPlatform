@@ -23,6 +23,17 @@ public class Payment {
         this.transactionId = transactionId;
         this.orderId = orderId;
     }
+    
+    public Payment(double amount, Date createdAt, PaymentMethod paymentMethod, PaymentStatus status,
+            String transactionId, Long orderId) {
+        this.amount = amount;
+        this.createdAt = createdAt;
+        this.paymentMethod = paymentMethod;
+        this.status = status;
+        this.transactionId = transactionId;
+        this.orderId = orderId;
+    }
+
     public Long getPaymentId() {
         return paymentId;
     }
@@ -67,7 +78,6 @@ public class Payment {
     }
     
     public static Payment fromJson(JsonObject json) {
-        Long paymentId = json.getJsonNumber("paymentId").longValue();
         double amount = json.getJsonNumber("amount").doubleValue();
         Date createdAt = Date.valueOf(json.getString("createdAt"));
         PaymentMethod paymentMethod = PaymentMethod.valueOf(json.getString("paymentMethod"));
@@ -75,7 +85,7 @@ public class Payment {
         String transactionId = json.getString("transactionId");
         Long orderId = json.getJsonNumber("orderId").longValue();
 
-        return new Payment(paymentId, amount, createdAt, paymentMethod, status, transactionId, orderId);
+        return new Payment(amount, createdAt, paymentMethod, status, transactionId, orderId);
     }
 
     public JsonObject toJson() {

@@ -26,7 +26,7 @@ public class PaymentDao implements Dao<Payment> {
                         rs.getLong("payment_id"),
                         rs.getDouble("amount"),
                         rs.getDate("created_at"),
-                        PaymentMethod.valueOf(rs.getString("payment_method")),
+                        PaymentMethod.valueOf(rs.getString("method")),
                         PaymentStatus.valueOf(rs.getString("status")),
                         rs.getString("transaction_id"),
                         rs.getLong("order_id")
@@ -50,7 +50,7 @@ public class PaymentDao implements Dao<Payment> {
                         rs.getLong("payment_id"),
                         rs.getDouble("amount"),
                         rs.getDate("created_at"),
-                        PaymentMethod.valueOf(rs.getString("payment_method")),
+                        PaymentMethod.valueOf(rs.getString("method")),
                         PaymentStatus.valueOf(rs.getString("status")),
                         rs.getString("transaction_id"),
                         rs.getLong("order_id")
@@ -64,7 +64,7 @@ public class PaymentDao implements Dao<Payment> {
 
     @Override
     public Payment save(Payment payment) {
-        String sql = "INSERT INTO payments (amount, created_at, payment_method, status, transaction_id, order_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO payments (amount, created_at, method, status, transaction_id, order_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setDouble(1, payment.getAmount());
@@ -91,7 +91,7 @@ public class PaymentDao implements Dao<Payment> {
 
     @Override
     public Payment update(Payment payment) {
-        String sql = "UPDATE payments SET amount = ?, payment_method = ?, status = ?, transaction_id = ? WHERE payment_id = ?";
+        String sql = "UPDATE payments SET amount = ?, method = ?, status = ?, transaction_id = ? WHERE payment_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, payment.getAmount());
@@ -133,7 +133,7 @@ public class PaymentDao implements Dao<Payment> {
                         rs.getLong("payment_id"),
                         rs.getDouble("amount"),
                         rs.getDate("created_at"),
-                        PaymentMethod.valueOf(rs.getString("payment_method")),
+                        PaymentMethod.valueOf(rs.getString("method")),
                         PaymentStatus.valueOf(rs.getString("status")),
                         rs.getString("transaction_id"),
                         rs.getLong("order_id")
