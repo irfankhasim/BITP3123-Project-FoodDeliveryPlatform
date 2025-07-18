@@ -24,6 +24,15 @@ public class Order {
         this.customerId = customerId;
         this.restaurantId = restaurantId;
     }
+    public Order(Date createdAt, String deliveryAddress, OrderStatus status, double totalAmount, Long customerId,
+            Long restaurantId) {
+        this.createdAt = createdAt;
+        this.deliveryAddress = deliveryAddress;
+        this.status = status;
+        this.totalAmount = totalAmount;
+        this.customerId = customerId;
+        this.restaurantId = restaurantId;
+    }
     public Long getOrderId() {
         return orderId;
     }
@@ -81,7 +90,6 @@ public class Order {
     }
 
     public static Order fromJson(JsonObject json) {
-        Long orderId = json.getJsonNumber("orderId").longValue();
         Date createdAt = Date.valueOf(json.getString("createdAt"));
         String deliveryAddress = json.getString("deliveryAddress");
         OrderStatus status = OrderStatus.valueOf(json.getString("status"));
@@ -91,6 +99,6 @@ public class Order {
         
 
         
-        return new Order(orderId, createdAt, deliveryAddress, status, totalAmount, customerId, restaurantId);
+        return new Order(createdAt, deliveryAddress, status, totalAmount, customerId, restaurantId);
     }
 }
